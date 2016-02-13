@@ -10,6 +10,7 @@ namespace Core
 		public Guid ID { get; set; }
 		public Socket Socket { get; private set; }
 		public Room Room { get; set; }
+		public string Name { get; set; }
 
 		public User(Socket socket)
 		{

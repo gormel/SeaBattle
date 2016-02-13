@@ -47,8 +47,12 @@
     <Compile Include="Packeges\BasePackage.cs" />
     <Compile Include="ClientListener.cs" />
     <Compile Include="Packeges\GetUserList.cs" />
+    <Compile Include="Packeges\JoinRoom.cs" />
     <Compile Include="Packeges\Login.cs" />
     <Compile Include="Packeges\Register.cs" />
+    <Compile Include="Packeges\RoomCreatePackage.cs" />
+    <Compile Include="Packeges\RoomInfoPackage.cs" />
+    <Compile Include="Packeges\RoomList.cs" />
     <Compile Include="Packeges\UserInfoPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />

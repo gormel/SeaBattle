@@ -10,6 +10,7 @@ namespace Server
 {
 	public class Room
 	{
+		public string Name { get; set; }
 		public Guid ID { get; private set; }
 		public Room()
 		{

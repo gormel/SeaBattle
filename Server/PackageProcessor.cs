@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using BD.Infos;
 using Core;
@@ -27,7 +25,7 @@ namespace Server
 		public async Task ProcessPackage(User user, GetUserList package)
 		{
 			var userList = new UserList();
-			userList.Users.AddRange(mServer.Lobby.Values.Where(u => u.Room == user.Room).Select(u => u.ID));
+			userList.Users.AddRange(mServer.Lobby.Values.Where(u => u.Room == user.Room || u.Room.ID == user.Room.ID).Select(u => u.ID));
 			await mServer.ClientListener.Send(user, userList);
 		}
 
@@ -50,6 +48,10 @@ namespace Server
 			}
 
 			user.ID = foundUser.ID;
+			user.Name = foundUser.Name;
+			if (foundUser.RoomID != Guid.Empty && mServer.Rooms.ContainsKey(foundUser.RoomID))
+				user.Room = mServer.Rooms[foundUser.RoomID];
+
 			result.ID = foundUser.ID;
 			await mServer.ClientListener.Send(user, result);
 		}
@@ -73,7 +75,58 @@ namespace Server
 			});
 			result.Result = true;
 			await mServer.ClientListener.Send(user, result);
+		}
 
+		public async Task ProcessPackage(User user, UserInfoPackage package)
+		{
+			var result = new UserInfoPackage();
+			if (!mServer.Lobby.ContainsKey(package.ID))
+			{
+				result.ID = Guid.Empty;
+				await mServer.ClientListener.Send(user, result);
+				return;
+			}
+
+			var info = mServer.Lobby[package.ID];
+			result.ID = info.ID;
+			result.Name = info.Name;
+			result.RoomID = info.Room != null ? info.Room.ID : Guid.Empty;
+			await mServer.ClientListener.Send(user, result);
+		}
+
+		public async Task ProcessPackage(User user, RoomInfoPackage package)
+		{
+			var result = new RoomInfoPackage();
+			if (!mServer.Rooms.ContainsKey(package.ID))
+			{
+				result.ID = Guid.Empty;
+				await mServer.ClientListener.Send(user, result);
+				return;
+			}
+			var info = mServer.Rooms[package.ID];
+			result.ID = info.ID;
+			result.Name = info.Name;
+			result.UserCount = mServer.Lobby.Values.Count(u => u.Room != null && u.Room.ID == package.ID);
+			await mServer.ClientListener.Send(user, result);
+		}
+
+		public async Task ProcessPackage(User user, RoomCreatePackage package)
+		{
+			var room = new Room();
+			room.Name = package.Name;
+
+			mServer.Rooms.TryAdd(room.ID, room);
+
+			var result = new RoomCreatePackage();
+			result.ID = room.ID;
+			await mServer.ClientListener.Send(user, result);
+		}
+
+		public async Task ProcessPackage(User user, RoomList package)
+		{
+			RoomList result = new RoomList();
+			result.Rooms.AddRange(mServer.Rooms.Values.Select(r => r.ID));
+			await mServer.ClientListener.Send(user, result);
 		}
 	}
 }

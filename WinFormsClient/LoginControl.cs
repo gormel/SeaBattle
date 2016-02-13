@@ -41,6 +41,8 @@ namespace WinFormsClient
 
 		void Resolver_OnRegister(Register e)
 		{
+			mLoginTextBox.Text = "";
+			mPasswordTextBox.Text = "";
 			MessageBox.Show("Регистрация прошла " + (e.Result ? "" : "не") + "успешно.", "Регистрация.");
 		}
 
@@ -51,6 +53,8 @@ namespace WinFormsClient
 				MessageBox.Show("Логин прошел не успешно.", "Логин.");
 				return;
 			}
+			mLoginTextBox.Text = "";
+			mPasswordTextBox.Text = "";
 			mMainForm.Me.ID = e.ID;
 			mMainForm.ControlStack.Push(new GameHub(mMainForm));
 		}
