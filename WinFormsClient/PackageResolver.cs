@@ -4,22 +4,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core;
+using Core.Packeges;
 
 namespace WinFormsClient
 {
 	public class PackageResolver
 	{
-		public event EventHandler<List<string>> OnUpdateUserList;
-		public void ResolvePackage(BasePackage pack)
+		private readonly Dictionary<Type, Delegate> mHandlers = new Dictionary<Type, Delegate>(); 
+
+		public void AddHandler<T>(Action<T> handler) where T : BasePackage
 		{
-			dynamic p = pack;
-			ResolvePackage(p);
+			if (!mHandlers.ContainsKey(typeof (T)))
+			{
+				mHandlers[typeof (T)] = handler;
+				return;
+			}
+
+			var dHandler = mHandlers[typeof(T)];
+			mHandlers[typeof(T)] = Delegate.Combine(dHandler, handler);
 		}
 
-		private void ResolvePackage(UserList pack)
+		public void RemoveHandler<T>(Action<T> handler) where T : BasePackage
 		{
-			if (OnUpdateUserList != null)
-				OnUpdateUserList(this, new List<string>(pack.Users.Select(id => id.ToString())));
+			if (mHandlers.ContainsKey(typeof (T)))
+			{
+				var result = Delegate.Remove(mHandlers[typeof (T)], handler);
+				if (result == null)
+					mHandlers.Remove(typeof (T));
+				else
+					mHandlers[typeof (T)] = result;
+			}
+		}
+
+		public void ResolvePackage(BasePackage pack)
+		{
+			if (mHandlers.ContainsKey(pack.GetType()))
+				mHandlers[pack.GetType()].DynamicInvoke(pack);
 		}
 	}
 }

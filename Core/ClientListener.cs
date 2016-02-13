@@ -13,10 +13,11 @@ namespace Core
 	{
 		private readonly JsonSerializer mSerializer = JsonSerializer.CreateDefault();
 		
+
 		public async Task Send(User user, BasePackage package)
 		{
 			var builder = new StringBuilder();
-			JsonSerializer.CreateDefault().Serialize(new StringWriter(builder), package );
+			mSerializer.Serialize(new StringWriter(builder), package );
 			var bytes = Encoding.UTF8.GetBytes(builder.ToString());
 			using (await user.Lock.LockAsync())
 			{

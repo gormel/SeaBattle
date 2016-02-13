@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using BD;
+using BD.Factorys;
 using Core;
 
 namespace Server
@@ -18,6 +20,7 @@ namespace Server
 		private Task mainTask;
 		public ClientTalker ClientListener { get; private set; }
 		public PackageProcessor PackageProcessor { get; private set; }
+		public IBD BD { get; private set; }
 
 		public Server()
 		{
@@ -27,6 +30,7 @@ namespace Server
 			mListener = new Socket(SocketType.Stream, ProtocolType.Tcp);
 			ClientListener = new ClientTalker();
 			PackageProcessor = new PackageProcessor(this);
+			BD = BDFactory.FileBD;
 		}
 		
 		public void LoadConfig()

@@ -16,6 +16,7 @@ namespace Client
 	{
 		static void Main(string[] args)
 		{
+			
 			var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 			socket.Connect("localhost", 666);
 			while (true)

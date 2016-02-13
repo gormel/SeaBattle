@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core
+namespace BD
 {
-    public class GetUserList : BasePackage
-    {
-    }
+	public interface IBDObject
+	{
+		Guid ID { get; set; }
+	}
 }

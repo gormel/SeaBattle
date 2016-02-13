@@ -1,6 +1,6 @@
 ﻿namespace WinFormsClient
 {
-	partial class Form1
+	partial class MainForm
 	{
 		/// <summary>
 		/// Требуется переменная конструктора.
@@ -57,7 +57,7 @@
 			this.ClientSize = new System.Drawing.Size(596, 534);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.listBox1);
-			this.Name = "Form1";
+			this.Name = "MainForm";
 			this.Text = "Form1";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResumeLayout(false);
