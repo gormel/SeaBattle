@@ -28,30 +28,44 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.mRoomsListBox = new System.Windows.Forms.ListBox();
+			this.mRefreshButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// listBox1
+			// mRoomsListBox
 			// 
-			this.listBox1.FormattingEnabled = true;
-			this.listBox1.Location = new System.Drawing.Point(3, 3);
-			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(221, 303);
-			this.listBox1.TabIndex = 0;
+			this.mRoomsListBox.FormattingEnabled = true;
+			this.mRoomsListBox.Location = new System.Drawing.Point(3, 32);
+			this.mRoomsListBox.Name = "mRoomsListBox";
+			this.mRoomsListBox.Size = new System.Drawing.Size(221, 303);
+			this.mRoomsListBox.TabIndex = 0;
+			// 
+			// mRefreshButton
+			// 
+			this.mRefreshButton.Location = new System.Drawing.Point(149, 3);
+			this.mRefreshButton.Name = "mRefreshButton";
+			this.mRefreshButton.Size = new System.Drawing.Size(75, 23);
+			this.mRefreshButton.TabIndex = 1;
+			this.mRefreshButton.Text = "Refresh";
+			this.mRefreshButton.UseVisualStyleBackColor = true;
+			this.mRefreshButton.Click += new System.EventHandler(this.mRefreshButton_Click);
 			// 
 			// GameHub
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.listBox1);
+			this.Controls.Add(this.mRefreshButton);
+			this.Controls.Add(this.mRoomsListBox);
 			this.Name = "GameHub";
 			this.Size = new System.Drawing.Size(719, 514);
+			this.Load += new System.EventHandler(this.GameHub_Load);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.ListBox listBox1;
+		private System.Windows.Forms.ListBox mRoomsListBox;
+		private System.Windows.Forms.Button mRefreshButton;
 	}
 }

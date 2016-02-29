@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using BD;
 using BD.Factorys;
+using BD.Infos;
 using Core;
 
 namespace Server
@@ -55,14 +56,21 @@ namespace Server
 				Console.WriteLine("Connected user: " + user.ID);
 				Lobby.TryAdd(user.ID, user);
 				ClientListener.StartListen(user, p => PackageActions(user, p))
-							  .ContinueWith(t =>
-				{
-					User us;
-					Lobby.TryRemove(user.ID, out us);
-					if (t.IsFaulted || t.IsCanceled)
-						Console.WriteLine("Disconnected user: " + user.ID);
-				});
+							  .ContinueWith(async t => await UserDisconnected(user));
 			}
+		}
+
+		private async Task UserDisconnected(User user)
+		{
+			User us;
+			Lobby.TryRemove(user.ID, out us);
+			Console.WriteLine("Disconnected user: " + user.ID);
+
+			var usInfo = await BD.Get(us.ID) as UserInfo;
+			usInfo.Name = user.Name;
+			usInfo.RoomID = user.Room.ID;
+
+			BD.Update(usInfo);
 		}
 
 		private void PackageActions(User user, BasePackage package)

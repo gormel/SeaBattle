@@ -124,8 +124,23 @@ namespace Server
 
 		public async Task ProcessPackage(User user, RoomList package)
 		{
-			RoomList result = new RoomList();
+			var result = new RoomList();
 			result.Rooms.AddRange(mServer.Rooms.Values.Select(r => r.ID));
+			await mServer.ClientListener.Send(user, result);
+		}
+
+		public async Task ProcessPackage(User user, JoinRoom package)
+		{
+			var result = new JoinRoom();
+			result.ID = package.ID;
+			if (!mServer.Rooms.ContainsKey(package.ID))
+			{
+				result.Result = false;
+				await mServer.ClientListener.Send(user, result);
+				return;
+			}
+			user.Room = mServer.Rooms[package.ID];
+			result.Result = true;
 			await mServer.ClientListener.Send(user, result);
 		}
 	}
