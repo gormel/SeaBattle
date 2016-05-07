@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Packeges;
+using Server;
+using WinFormsClient.Controls;
 
 namespace WinFormsClient
 {
@@ -38,18 +40,20 @@ namespace WinFormsClient
 			mMainForm.Resolver.AddHandler<RoomInfoPackage>(RoomInfoRecived);
 			mMainForm.Resolver.AddHandler<RoomCreatePackage>(RoomCreateRecived);
 			mMainForm.Resolver.AddHandler<JoinRoom>(JoinRoomRecived);
-			RefreshRooms();
+			await RefreshRooms();
 		}
 
 		private void JoinRoomRecived(JoinRoom joinRoom)
 		{
 			if (!joinRoom.Result)
 				return;
+			mMainForm.ControlStack.Push(new RoomControl(mMainForm));
 		}
 
-		private void RoomCreateRecived(RoomCreatePackage roomCreatePackage)
+		private async void RoomCreateRecived(RoomCreatePackage roomCreatePackage)
 		{
-			RefreshRooms();
+			await RefreshRooms();
+			await mMainForm.Talker.Send(mMainForm.Me, new JoinRoom { ID = roomCreatePackage.ID });
 		}
 
 		private async void RoomListRecived(RoomList list)
@@ -57,14 +61,14 @@ namespace WinFormsClient
 			mRoomsListBox.Items.Clear();
 			foreach (var room in list.Rooms)
 			{
-				 await mMainForm.Talker.Send(mMainForm.Me, new RoomInfoPackage
+				await mMainForm.Talker.Send(mMainForm.Me, new RoomInfoPackage
 				{
 					ID = room
 				});
 			}
 		}
 
-		private async void RefreshRooms()
+		private async Task RefreshRooms()
 		{
 			 await mMainForm.Talker.Send(mMainForm.Me, new RoomList());
 		}
@@ -74,9 +78,9 @@ namespace WinFormsClient
 			mRoomsListBox.Items.Add(new ListBoxItem { ID = info.ID, Name = info.Name, UserCount = info.UserCount });
 		}
 
-		private void mRefreshButton_Click(object sender, EventArgs e)
+		private async void mRefreshButton_Click(object sender, EventArgs e)
 		{
-			RefreshRooms();
+			await RefreshRooms();
 		}
 
 		private async void button1_Click(object sender, EventArgs e)

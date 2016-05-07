@@ -46,6 +46,12 @@ namespace Server
 				await mServer.ClientListener.Send(user, result);
 				return;
 			}
+			if (mServer.Lobby.Values.Any(u => u.Name == package.Name))
+			{
+				result.ID = Guid.Empty;
+				await mServer.ClientListener.Send(user, result);
+				return;
+			}
 
 			user.ID = foundUser.ID;
 			user.Name = foundUser.Name;
